@@ -1,12 +1,18 @@
 import React from 'react';
-import {getMergeSortAnimations} from '../sortingAlgorithms/sortingAlgorithms.js';
+import {
+  getMergeSortAnimations,
+  getInsertionSortAnimations,
+  getBubbleSortAnimations,
+  getQuickSortAnimations,
+  getSelectionSortAnimations,
+} from '../sortingAlgorithms/sortingAlgorithms.js';
 import './SortingVisualizer.css';
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 1;
+const ANIMATION_SPEED_MS = 10;
 
 // Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 310;
+const NUMBER_OF_ARRAY_BARS = 50;
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'turquoise';
@@ -30,45 +36,57 @@ export default class SortingVisualizer extends React.Component {
   resetArray() {
     const array = [];
     for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-      array.push(randomIntFromInterval(5, 730));
+      array.push(randomIntFromInterval(5, 720));
     }
     this.setState({array});
   }
 
-  mergeSort() {
-    const animations = getMergeSortAnimations(this.state.array);
+  doAnimations(animations) {
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = document.getElementsByClassName('array-bar');
-      const isColorChange = i % 3 !== 2;
+      const [isColorChange, barOneIdx, barTwoIdx, swichColor] = animations[i];
       if (isColorChange) {
-        const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+        const color = swichColor === true ? SECONDARY_COLOR : PRIMARY_COLOR;
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
         }, i * ANIMATION_SPEED_MS);
       } else {
         setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
-          barOneStyle.height = `${newHeight}px`;
+          barOneStyle.height = `${barTwoIdx}px`;
         }, i * ANIMATION_SPEED_MS);
       }
     }
   }
 
-  quickSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
+  selectionSort() {
+    const animations = getSelectionSortAnimations(this.state.array);
+    this.doAnimations(animations);
   }
 
-  heapSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
+  mergeSort() {
+    const animations = getMergeSortAnimations(this.state.array);
+    this.doAnimations(animations);
   }
+
+  quickSort() {
+    const animations = getQuickSortAnimations(this.state.array);
+    this.doAnimations(animations);
+  }
+
+  heapSort() {}
 
   bubbleSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
+    const animations = getBubbleSortAnimations(this.state.array);
+    this.doAnimations(animations);
+  }
+
+  insertionSort() {
+    const animations = getInsertionSortAnimations(this.state.array);
+    this.doAnimations(animations);
   }
 
   // NOTE: This method will only work if your sorting algorithms actually return
@@ -101,14 +119,14 @@ export default class SortingVisualizer extends React.Component {
               height: `${value}px`,
             }}></div>
         ))}
+        <div></div>
         <button onClick={() => this.resetArray()}>Generate New Array</button>
         <button onClick={() => this.mergeSort()}>Merge Sort</button>
         <button onClick={() => this.quickSort()}>Quick Sort</button>
-        <button onClick={() => this.heapSort()}>Heap Sort</button>
+        <button onClick={() => this.selectionSort()}>Selection Sort</button>
+        {/* <button onClick={() => this.heapSort()}>Heap Sort</button> */}
+        <button onClick={() => this.insertionSort()}>Insertion Sort</button>
         <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
-        <button onClick={() => this.testSortingAlgorithms()}>
-          Test Sorting Algorithms (BROKEN)
-        </button>
       </div>
     );
   }
