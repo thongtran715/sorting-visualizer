@@ -1,6 +1,7 @@
-
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+Navigate to this link to see the outcome of the project:
+http://thong-tran-sorting-visualizer.surge.sh/
 
 ## Available Scripts
 
