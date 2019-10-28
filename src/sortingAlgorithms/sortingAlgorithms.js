@@ -6,6 +6,13 @@ export function getMergeSortAnimations(array) {
   return animations;
 }
 
+export function getCountingSortAnimations(array) {
+  const animations = []
+  if (array.length <= 1) return array;
+  countingSort(array, animations)
+  return animations
+}
+
 export function getInsertionSortAnimations(array) {
   const animations = []
   if (array.length <= 1) return array;
@@ -29,6 +36,39 @@ export function getSelectionSortAnimations(array) {
   const animations = [];
   selectionSort(array, animations)
   return animations
+}
+
+function countingSort(array, animations) {
+  let largestElement = 0;
+  for (let num of array) {
+    if (num > largestElement) {
+      largestElement = num
+    }
+  }
+
+  let auxiliaryArray = []
+  for (let i = 0; i < largestElement + 1; ++i) {
+    auxiliaryArray.push(0);
+  }
+
+  for (let i = 0; i < array.length; ++i) {
+    animations.push([true, i, null, true])
+    animations.push([true, i, null, false])
+    auxiliaryArray[array[i]] += 1;
+  }
+
+  let idx = 0;
+  for (let i = 0; i < auxiliaryArray.length; ++i) {
+    if (auxiliaryArray[i] !== 0) {
+      let num = auxiliaryArray[i]
+      while (num !== 0) {
+        animations.push([false, idx, i, false])
+        array[idx] = i
+        num -= 1
+        idx += 1
+      }
+    }
+  }
 }
 
 function selectionSort(array, animations) {
